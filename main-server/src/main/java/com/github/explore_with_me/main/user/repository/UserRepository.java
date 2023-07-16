@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, PagingAndSortingRepository<User, Long> {
 
-
     List<User> findAllByIdIn(@Param("ids") Iterable<Long> ids, Pageable pagination);
 }

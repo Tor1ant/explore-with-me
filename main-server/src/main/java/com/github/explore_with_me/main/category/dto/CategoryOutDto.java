@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Data
 public class CategoryOutDto {
-
     private final Long id;
     private final String name;
 }

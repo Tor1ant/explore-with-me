@@ -8,11 +8,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class StatsServiceImpl implements StatsService {
 
     private HitRepository hitRepository;
@@ -27,6 +29,7 @@ public class StatsServiceImpl implements StatsService {
                 .timestamp(inputHitDto.getTimestamp())
                 .build();
         hitRepository.save(hit);
+        log.info("Просмотр события с ip= " + inputHitDto.getIp() + " сохранён");
     }
 
     @Override
@@ -45,6 +48,7 @@ public class StatsServiceImpl implements StatsService {
         if (unique && uris == null) {
             stats = hitRepository.getAllUniqueStats(start, end);
         }
+        log.info("Статистика по просмотру событий получена= " + stats);
         return stats;
     }
 }

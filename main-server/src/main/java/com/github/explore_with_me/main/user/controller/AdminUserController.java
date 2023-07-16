@@ -1,6 +1,6 @@
 package com.github.explore_with_me.main.user.controller;
 
-import com.github.explore_with_me.main.user.controller.paramEntity.GetUsersParam;
+import com.github.explore_with_me.main.user.controller.paramEntity.UsersParam;
 import com.github.explore_with_me.main.user.dto.NewUserDto;
 import com.github.explore_with_me.main.user.dto.UserDto;
 import com.github.explore_with_me.main.user.service.UserService;
@@ -35,8 +35,8 @@ public class AdminUserController {
     public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
-        GetUsersParam getUsersParam = new GetUsersParam(ids, from, size);
-        return userService.getUsersInfo(getUsersParam);
+        UsersParam usersParam = new UsersParam(ids, from, size);
+        return userService.getUsersInfo(usersParam);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

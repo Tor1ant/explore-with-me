@@ -1,6 +1,6 @@
 package com.github.explore_with_me.main.category.service;
 
-import com.github.explore_with_me.main.category.controller.paramEntity.CategoryParams;
+import com.github.explore_with_me.main.paramEntity.PaginationParams;
 import com.github.explore_with_me.main.category.dto.CategoryOutDto;
 import com.github.explore_with_me.main.category.dto.NewCategoryDto;
 import com.github.explore_with_me.main.category.mapper.CategoryMapper;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
-
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
@@ -34,10 +33,9 @@ public class CategoryServiceImpl implements CategoryService {
             handleConflictException(e);
         }
         log.info("Категория= " + category + " сохранена");
-        return categoryMapper.CategoryToCategoryOutDto(category);
+        return categoryMapper.categoryToCategoryOutDto(category);
     }
 
-    @Transactional
     @Override
     public void deleteCategory(Long categoryId) {
         if (!categoryRepository.existsById(categoryId)) {
@@ -46,12 +44,11 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             categoryRepository.deleteById(categoryId);
         } catch (Exception e) {
-            throw new ConflictException(e.getMessage());
+            handleConflictException(e);
         }
         log.info("Категория с id= " + categoryId + " удалена");
     }
 
-    @Transactional
     @Override
     public CategoryOutDto updateCategory(Long categoryId, NewCategoryDto newCategoryDto) {
         Optional<Category> oldCategory = categoryRepository.findById(categoryId);
@@ -59,16 +56,16 @@ public class CategoryServiceImpl implements CategoryService {
             throw new NotFoundException("Категория с id= " + categoryId + " не найдена");
         }
         Category updatedCategory = categoryMapper.newCategoryDtoToCategory(newCategoryDto);
+        updatedCategory.setId(categoryId);
         try {
             categoryRepository.save(updatedCategory);
 
         } catch (Exception e) {
             handleConflictException(e);
         }
-        updatedCategory.setId(categoryId);
         log.info("Категория с id= " + categoryId + " изменила название с = " + oldCategory.get().getName() + " на = "
                 + newCategoryDto.getName());
-        return categoryMapper.CategoryToCategoryOutDto(updatedCategory);
+        return categoryMapper.categoryToCategoryOutDto(updatedCategory);
     }
 
     private void handleConflictException(Exception e) {
@@ -79,12 +76,12 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryOutDto> getCategories(CategoryParams categoryParams) {
-        PageRequest pagination = PageRequest.of(categoryParams.getFrom() / categoryParams.getSize(),
-                categoryParams.getSize());
+    public List<CategoryOutDto> getCategories(PaginationParams paginationParams) {
+        PageRequest pagination = PageRequest.of(paginationParams.getFrom() / paginationParams.getSize(),
+                paginationParams.getSize());
         List<Category> paginatedCategories = categoryRepository.findAll(pagination).getContent();
         log.info("Получен список категорий= " + paginatedCategories);
-        return categoryMapper.CategoriesToCategoriesOutDto(paginatedCategories);
+        return categoryMapper.categoriesToCategoriesOutDto(paginatedCategories);
     }
 
     @Override
@@ -93,7 +90,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.isEmpty()) {
             throw new NotFoundException("Категория с id= " + categoryId + " не найдена");
         }
-        CategoryOutDto categoryDto = categoryMapper.CategoryToCategoryOutDto(category.get());
+        CategoryOutDto categoryDto = categoryMapper.categoryToCategoryOutDto(category.get());
         log.info("Получена категория= " + category.get());
         return categoryDto;
     }

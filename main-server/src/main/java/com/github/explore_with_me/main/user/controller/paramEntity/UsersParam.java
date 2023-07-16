@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class GetUsersParam {
+public class UsersParam {
 
     private List<Long> ids;
     private int from;

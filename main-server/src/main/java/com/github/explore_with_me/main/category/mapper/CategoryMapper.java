@@ -11,7 +11,7 @@ public interface CategoryMapper {
 
     Category newCategoryDtoToCategory(NewCategoryDto newCategoryDto);
 
-    CategoryOutDto CategoryToCategoryOutDto(Category category);
+    CategoryOutDto categoryToCategoryOutDto(Category category);
 
-    List<CategoryOutDto> CategoriesToCategoriesOutDto(List<Category> paginatedCategories);
+    List<CategoryOutDto> categoriesToCategoriesOutDto(List<Category> paginatedCategories);
 }
