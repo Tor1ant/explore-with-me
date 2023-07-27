@@ -1,7 +1,5 @@
 package com.github.explore_with_me.main.user.controller;
 
-import com.github.explore_with_me.main.user.controller.paramEntity.UsersParam;
-import com.github.explore_with_me.main.user.dto.NewUserDto;
 import com.github.explore_with_me.main.user.dto.UserDto;
 import com.github.explore_with_me.main.user.service.UserService;
 import java.util.List;
@@ -27,16 +25,15 @@ public class AdminUserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public UserDto postUser(@RequestBody @Valid NewUserDto newUserDto) {
-        return userService.createUser(newUserDto);
+    public UserDto postUser(@RequestBody @Valid UserDto userDto) {
+        return userService.createUser(userDto);
     }
 
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
-        UsersParam usersParam = new UsersParam(ids, from, size);
-        return userService.getUsersInfo(usersParam);
+        return userService.getUsersInfo(ids,from,size);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,8 +1,6 @@
 package com.github.explore_with_me.main.user.service;
 
 import com.github.explore_with_me.main.exception.model.ConflictException;
-import com.github.explore_with_me.main.user.controller.paramEntity.UsersParam;
-import com.github.explore_with_me.main.user.dto.NewUserDto;
 import com.github.explore_with_me.main.user.dto.UserDto;
 import com.github.explore_with_me.main.user.mapper.UserMapper;
 import com.github.explore_with_me.main.user.model.User;
@@ -23,37 +21,41 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public UserDto createUser(NewUserDto newUserDto) {
-        User user = userMapper.newUserDtoToUser(newUserDto);
-        try {
-            user = userRepository.save(user);
-        } catch (Exception e) {
-            StringBuilder stringBuilder = new StringBuilder(e.getCause().getCause().getMessage());
-            int indexEqualsSign = stringBuilder.indexOf("=");
-            stringBuilder.delete(0, indexEqualsSign + 1);
-            throw new ConflictException(stringBuilder.toString().replace("\"", "").trim());
-        }
-        log.info("Пользователь= " + user + " создан.");
-        return userMapper.userToUserDto(user);
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+        log.info("Пользователь с id " + userId + "удалён");
     }
 
     @Override
-    public List<UserDto> getUsersInfo(UsersParam usersParam) {
-        PageRequest pagination = PageRequest.of(usersParam.getFrom() / usersParam.getSize(),
-                usersParam.getSize());
+    public List<UserDto> getUsersInfo(List<Long> ids, int from, int size) {
+        PageRequest pagination = PageRequest.of(from / size,
+                size);
         List<User> all = new ArrayList<>();
-        if (usersParam.getIds() == null) {
+        if (ids == null) {
             all.addAll(userRepository.findAll(pagination).getContent());
         } else {
-            all.addAll(userRepository.findAllByIdIn(usersParam.getIds(), pagination));
+            all.addAll(userRepository.findAllByIdIn(ids, pagination));
         }
         log.info("Получены все пользователи " + all);
         return userMapper.userListToUserDtoList(all);
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
-        log.info("Пользователь с id " + userId + "удалён");
+    public UserDto createUser(UserDto userDto) {
+        User user = userMapper.userDtoToUser(userDto);
+        try {
+            user = userRepository.save(user);
+        } catch (Exception e) {
+            catchSqlException(e);
+        }
+        log.info("Пользователь= " + user + " создан.");
+        return userMapper.userToUserDto(user);
+    }
+
+    private void catchSqlException(Exception e) {
+        StringBuilder stringBuilder = new StringBuilder(e.getCause().getCause().getMessage());
+        int indexEqualsSign = stringBuilder.indexOf("=");
+        stringBuilder.delete(0, indexEqualsSign + 1);
+        throw new ConflictException(stringBuilder.toString().replace("\"", "").trim());
     }
 }

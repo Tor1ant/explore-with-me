@@ -1,16 +1,15 @@
 package com.github.explore_with_me.main.compilation.service;
 
-import com.github.explore_with_me.main.compilation.mapper.CompilationMapper;
 import com.github.explore_with_me.main.compilation.dto.CompilationDto;
 import com.github.explore_with_me.main.compilation.dto.NewCompilationDto;
 import com.github.explore_with_me.main.compilation.dto.UpdateCompilationRequest;
+import com.github.explore_with_me.main.compilation.mapper.CompilationMapper;
 import com.github.explore_with_me.main.compilation.model.Compilation;
 import com.github.explore_with_me.main.compilation.repository.CompilationRepository;
 import com.github.explore_with_me.main.event.mapper.EventMapstructMapper;
 import com.github.explore_with_me.main.event.model.Event;
 import com.github.explore_with_me.main.event.repository.EventRepository;
 import com.github.explore_with_me.main.exception.model.NotFoundException;
-import com.github.explore_with_me.main.paramEntity.PaginationParams;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -88,9 +87,9 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public List<CompilationDto> getCompilations(boolean pinned, PaginationParams paginationParams) {
-        PageRequest pageRequest = PageRequest.of(paginationParams.getFrom() / paginationParams.getSize(),
-                paginationParams.getSize());
+    public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
+        PageRequest pageRequest = PageRequest.of(from / size,
+                size);
         List<CompilationDto> pagedCompilations = compilationRepository.findAllByPinned(pinned, pageRequest)
                 .stream()
                 .map(compilationMapper::compilationtoCompilationDto)

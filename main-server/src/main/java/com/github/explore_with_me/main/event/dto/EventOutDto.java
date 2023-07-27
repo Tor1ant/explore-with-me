@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.explore_with_me.main.category.dto.CategoryOutDto;
 import com.github.explore_with_me.main.event.enumerated.State;
 import com.github.explore_with_me.main.event.model.Location;
-import com.github.explore_with_me.main.user.dto.UserShortDto;
+import com.github.explore_with_me.main.user.dto.UserDto;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +24,7 @@ public class EventOutDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Long id;
-    private UserShortDto initiator;
+    private UserDto initiator;
     private Location location;
     private boolean paid;
     private int participantLimit;

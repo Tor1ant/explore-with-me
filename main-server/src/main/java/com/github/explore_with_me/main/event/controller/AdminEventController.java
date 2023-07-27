@@ -4,8 +4,6 @@ import com.github.explore_with_me.main.event.dto.EventOutDto;
 import com.github.explore_with_me.main.event.dto.UpdateEventUserDto;
 import com.github.explore_with_me.main.event.enumerated.State;
 import com.github.explore_with_me.main.event.service.EventService;
-import com.github.explore_with_me.main.paramEntity.EventFindParam;
-import com.github.explore_with_me.main.paramEntity.PaginationParams;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.Valid;
@@ -40,7 +38,6 @@ public class AdminEventController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @RequestParam(defaultValue = "0") Integer from,
             @RequestParam(defaultValue = "10") Integer size) {
-        return eventService.findEventsByAdmin(new EventFindParam(users, states, categories, rangeStart, rangeEnd),
-                new PaginationParams(from, size));
+        return eventService.findEventsByAdmin(users, states, categories, rangeStart, rangeEnd,from,size);
     }
 }

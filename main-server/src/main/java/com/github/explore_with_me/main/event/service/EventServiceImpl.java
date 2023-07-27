@@ -19,9 +19,6 @@ import com.github.explore_with_me.main.event.repository.LocationRepository;
 import com.github.explore_with_me.main.exception.model.BadRequestException;
 import com.github.explore_with_me.main.exception.model.ConflictException;
 import com.github.explore_with_me.main.exception.model.NotFoundException;
-import com.github.explore_with_me.main.paramEntity.EventFindParam;
-import com.github.explore_with_me.main.paramEntity.GetEventsParam;
-import com.github.explore_with_me.main.paramEntity.PaginationParams;
 import com.github.explore_with_me.main.requests.dto.ParticipationRequestDto;
 import com.github.explore_with_me.main.requests.mapper.RequestMapper;
 import com.github.explore_with_me.main.requests.model.Request;
@@ -87,9 +84,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> getUserEvents(Long userId, PaginationParams params) {
-        PageRequest pagination = PageRequest.of(params.getFrom() / params.getSize(),
-                params.getSize());
+    public List<EventShortDto> getUserEvents(Long userId, int from, int size) {
+        PageRequest pagination = PageRequest.of(from / size,
+                size);
         List<Event> allInitiatorEvents = eventRepository.findAllByInitiatorId(userId, pagination);
         List<EventShortDto> userEventsShortDtoList = eventMapstructMapper.eventsToEventShortDtoList(allInitiatorEvents);
         log.info("Пользователь с id= " + userId + " получил список своих событий= " + userEventsShortDtoList);
@@ -228,22 +225,23 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventOutDto> findEventsByAdmin(EventFindParam eventFindParam, PaginationParams params) {
-        PageRequest pagination = PageRequest.of(params.getFrom() / params.getSize(),
-                params.getSize());
+    public List<EventOutDto> findEventsByAdmin(List<Long> users, List<State> states, List<Long> categories,
+            LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+        PageRequest pagination = PageRequest.of(from / size,
+                size);
         LocalDateTime start;
         LocalDateTime end;
-        if (eventFindParam.getRangeStart() == null || eventFindParam.getRangeEnd() == null) {
+        if (rangeStart == null || rangeEnd == null) {
             start = LocalDateTime.now();
             end = start.plusYears(1);
         } else {
-            start = eventFindParam.getRangeStart();
-            end = eventFindParam.getRangeEnd();
+            start = rangeStart;
+            end = rangeEnd;
         }
         List<EventOutDto> eventsByEventParamAndPaginationParams = eventRepository
                 .findEventsByEventParamAndPaginationParams(
-                        eventFindParam.getUserIds(),
-                        eventFindParam.getStates(), eventFindParam.getCategoryIds(), start,
+                        users,
+                        states, categories, start,
                         end, pagination).stream()
                 .map(eventMapstructMapper::eventToEventOutDto)
                 .collect(Collectors.toList());
@@ -269,34 +267,34 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> getEvents(GetEventsParam getEventsParam, PaginationParams pagination) {
+    public List<EventShortDto> getEvents(String text, List<Long> categories, Boolean paid, LocalDateTime rangeStart,
+            LocalDateTime rangeEnd, boolean onlyAvailable, Sorting sort, int from, int size) {
         PageRequest pageRequest;
         LocalDateTime start;
         LocalDateTime end;
-        Sort sort;
-        if (getEventsParam.getRangeStart() == null || getEventsParam.getRangeEnd() == null) {
+        Sort sorting;
+        if (rangeStart == null || rangeEnd == null) {
             start = LocalDateTime.now();
             end = start.plusYears(1);
         } else {
-            start = getEventsParam.getRangeStart();
-            end = getEventsParam.getRangeEnd();
+            start = rangeStart;
+            end = rangeEnd;
         }
-        if (getEventsParam.getSort() == null || getEventsParam.getSort().equals(Sorting.EVENT_DATE)) {
-            sort = Sort.by("eventDate").descending();
+        if (sort == null || sort.equals(Sorting.EVENT_DATE)) {
+            sorting = Sort.by("eventDate").descending();
         } else {
-            sort = Sort.by("views").descending();
+            sorting = Sort.by("views").descending();
         }
-        pageRequest = PageRequest.of(pagination.getFrom() / pagination.getSize(),
-                pagination.getSize(), sort);
+        pageRequest = PageRequest.of(from / size, size, sorting);
         List<Event> eventsList;
-        if (getEventsParam.getOnlyAvailable()) {
-            eventsList = eventRepository.getOnlyAvailableEvents(getEventsParam.getText(),
-                    getEventsParam.getCategories(), getEventsParam.getPaid(),
+        if (onlyAvailable) {
+            eventsList = eventRepository.getOnlyAvailableEvents(text,
+                    categories, paid,
                     start, end,
                     pageRequest);
         } else {
-            eventsList = eventRepository.getEvents(getEventsParam.getText(),
-                    getEventsParam.getCategories(), getEventsParam.getPaid(),
+            eventsList = eventRepository.getEvents(text,
+                    categories, paid,
                     start, end,
                     pageRequest);
         }

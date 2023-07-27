@@ -1,6 +1,5 @@
 package com.github.explore_with_me.main.category.service;
 
-import com.github.explore_with_me.main.paramEntity.PaginationParams;
 import com.github.explore_with_me.main.category.dto.CategoryOutDto;
 import com.github.explore_with_me.main.category.dto.NewCategoryDto;
 import com.github.explore_with_me.main.category.mapper.CategoryMapper;
@@ -76,9 +75,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryOutDto> getCategories(PaginationParams paginationParams) {
-        PageRequest pagination = PageRequest.of(paginationParams.getFrom() / paginationParams.getSize(),
-                paginationParams.getSize());
+    public List<CategoryOutDto> getCategories(int from, int size) {
+        PageRequest pagination = PageRequest.of(from / size,
+                size);
         List<Category> paginatedCategories = categoryRepository.findAll(pagination).getContent();
         log.info("Получен список категорий= " + paginatedCategories);
         return categoryMapper.categoriesToCategoriesOutDto(paginatedCategories);

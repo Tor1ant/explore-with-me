@@ -8,7 +8,6 @@ import com.github.explore_with_me.main.event.dto.NewEventDto;
 import com.github.explore_with_me.main.event.dto.UpdateEventUserDto;
 import com.github.explore_with_me.main.event.service.EventService;
 import com.github.explore_with_me.main.exception.model.BadRequestException;
-import com.github.explore_with_me.main.paramEntity.PaginationParams;
 import com.github.explore_with_me.main.requests.dto.ParticipationRequestDto;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,7 +42,7 @@ public class PrivateEventController {
     @GetMapping
     public List<EventShortDto> getUsersEvents(@PathVariable Long userId, @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
-        return eventService.getUserEvents(userId, new PaginationParams(from, size));
+        return eventService.getUserEvents(userId, from, size);
     }
 
     @GetMapping("/{eventId}")
