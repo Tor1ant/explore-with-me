@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EventRequestStatusUpdateRequest {
 
-    List<Long> requestIds;
-    Status status;
+    private List<Long> requestIds;
+    private Status status;
 }
