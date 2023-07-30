@@ -1,9 +1,11 @@
 package com.github.explore_with_me.main.event.service;
 
+import com.github.explore_with_me.main.event.dto.CommentDto;
 import com.github.explore_with_me.main.event.dto.EventOutDto;
 import com.github.explore_with_me.main.event.dto.EventRequestStatusUpdateRequest;
 import com.github.explore_with_me.main.event.dto.EventRequestStatusUpdateResult;
 import com.github.explore_with_me.main.event.dto.EventShortDto;
+import com.github.explore_with_me.main.event.dto.InputCommentDto;
 import com.github.explore_with_me.main.event.dto.NewEventDto;
 import com.github.explore_with_me.main.event.dto.UpdateEventUserDto;
 import com.github.explore_with_me.main.event.enumerated.Sorting;
@@ -38,4 +40,14 @@ public interface EventService {
     List<EventOutDto> findEventsByAdmin(List<Long> users, List<State> states, List<Long> categories,
             LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Integer from, Integer size);
+
+    CommentDto createComment(InputCommentDto inputCommentDto, Long authorId, Long eventId);
+
+    List<CommentDto> getEventComments(Long eventId);
+
+    CommentDto changeComment(InputCommentDto inputCommentDto, Long authorId, Long eventId, Long commentId);
+
+    void removeByCommentIdAndAuthorId(Long commentId, Long authorId);
+
+    void removeCommentById(Long commentId);
 }

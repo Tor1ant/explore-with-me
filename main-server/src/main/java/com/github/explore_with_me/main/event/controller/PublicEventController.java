@@ -1,5 +1,6 @@
 package com.github.explore_with_me.main.event.controller;
 
+import com.github.explore_with_me.main.event.dto.CommentDto;
 import com.github.explore_with_me.main.event.dto.EventOutDto;
 import com.github.explore_with_me.main.event.dto.EventShortDto;
 import com.github.explore_with_me.main.event.enumerated.Sorting;
@@ -52,5 +53,10 @@ public class PublicEventController {
                 request.getRemoteAddr(),
                 LocalDateTime.now()));
         return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<CommentDto> getComments(@PathVariable Long id) {
+        return eventService.getEventComments(id);
     }
 }
