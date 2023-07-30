@@ -47,6 +47,6 @@ public class AdminEventController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{ignoredEventId}/comments/{commentId}")
     public void removeCommentByAdmin(@PathVariable Long ignoredEventId, @PathVariable Long commentId) {
-        eventService.removeCommentByAdmin(commentId);
+        eventService.removeCommentById(commentId);
     }
 }

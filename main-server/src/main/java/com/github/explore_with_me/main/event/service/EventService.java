@@ -47,7 +47,7 @@ public interface EventService {
 
     CommentDto changeComment(InputCommentDto inputCommentDto, Long authorId, Long eventId, Long commentId);
 
-    void removeComment(Long commentId, Long authorId);
+    void removeByCommentIdAndAuthorId(Long commentId, Long authorId);
 
-    void removeCommentByAdmin(Long commentId);
+    void removeCommentById(Long commentId);
 }

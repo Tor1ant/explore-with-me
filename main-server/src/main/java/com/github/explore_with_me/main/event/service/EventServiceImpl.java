@@ -367,7 +367,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void removeComment(Long commentId, Long authorId) {
+    public void removeByCommentIdAndAuthorId(Long commentId, Long authorId) {
         if (!userRepository.existsById(authorId)) {
             throw new NotFoundException("Пользователь с id= " + authorId + " не найден");
         }
@@ -381,7 +381,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void removeCommentByAdmin(Long commentId) {
+    public void removeCommentById(Long commentId) {
         commentRepository.deleteById(commentId);
         log.info(String.format("Комментарий с id= %s удалён", commentId));
     }

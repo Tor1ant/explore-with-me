@@ -90,7 +90,7 @@ public class PrivateEventController {
     @DeleteMapping("{ignoredEventId}/comments/{commentId}")
     public void deleteComment(@PathVariable Long userId,
             @PathVariable Long commentId, @PathVariable Long ignoredEventId) {
-        eventService.removeComment(commentId, userId);
+        eventService.removeByCommentIdAndAuthorId(commentId, userId);
     }
 
     private void dateTimeValidate(LocalDateTime localDateTime) {
